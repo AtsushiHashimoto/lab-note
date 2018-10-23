@@ -208,4 +208,3 @@ class SaveResult():
             os.makedirs(dirname)
         return dst_dir
 
-    
