@@ -69,9 +69,3 @@ def get_notebook_name():
             warnings.warn("Failed to get script name automatically.")
             warnings.warn("This warning may happen if you are using jupyter in a docker, and access via port-forwarding. Using jupyter with password authentification can be another possibility.")
             pass
-        
-<<<<<<< HEAD
-        
-=======
-        
->>>>>>> e441e080b54f8e02641198a4d18bdf9b85ce29f1
