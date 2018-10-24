@@ -1,4 +1,12 @@
 import sys
+import os
+import json
+import re
+import ipykernel
+import requests
+import warnings
+import stat
+
 def is_executed_on_ipython():
     if "ipykernel_launcher.py" in sys.argv[0]:
         return True
@@ -24,14 +32,29 @@ def edict2dict(edict):
     return {k:v for k,v in edict.items()}
 
 
-# from https://github.com/jupyter/notebook/issues/1000
-import json
-import os.path
-import re
-import ipykernel
-import requests
-import warnings
 
+def remove_write_permissions(path):
+    """Remove write permissions from this path, while keeping all other permissions intact.
+
+    Params:
+        path:  The path whose permissions to alter.
+    """
+    NO_USER_WRITING = ~stat.S_IWUSR
+    NO_GROUP_WRITING = ~stat.S_IWGRP
+    NO_OTHER_WRITING = ~stat.S_IWOTH
+    NO_WRITING = NO_USER_WRITING & NO_GROUP_WRITING & NO_OTHER_WRITING
+
+    current_permissions = stat.S_IMODE(os.lstat(path).st_mode)
+    os.chmod(path, current_permissions & NO_WRITING)
+
+def find_all_files(directory):
+    for root, dirs, files in os.walk(directory):
+        yield root
+        for file in files:
+            yield os.path.join(root, file)
+
+
+# from https://github.com/jupyter/notebook/issues/1000
 #try:  # Python 3
 #    from urllib.parse import urljoin
 #except ImportError:  # Python 2
@@ -48,7 +71,6 @@ except ImportError:  # Python 2
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=ShimWarning)
         from IPython.html.notebookapp import list_running_servers
-
 
 def get_notebook_name():
     """

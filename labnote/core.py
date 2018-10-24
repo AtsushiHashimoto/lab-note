@@ -10,28 +10,34 @@ from datetime import datetime as dt
 import shutil
 import inspect
 
+from IPython import get_ipython
+
 # 改善点
 # 1. from x import func のfuncを検出する術がない ⇢ 今は，できるだけimport moduleとしてもらうことでしか対応できない.
 # 2. jupyterやipythonで，script名を取得できない ⇢ constructorで入れてもらう(ipythonのときだけ)
 
 class Note():
-    '''
-    '''
     def __init__(self, 
                  log_dir, 
                  script_name=None,
                  safe_mode=True,
+                 remove_write_permission=True,
+                 log_format='html',
                 ):
         self.dir = utils.trim_slash(log_dir)
         self.safe_mode = safe_mode
         
         # Constant Values
         self.ParamFileBaseName = 'params.yml'
+        self.MemoFileBaseName = 'memo.txt'
+        self.PickleFileBaseName = 'note.pickle'
         self.DateTimeFormat = "%Y%m%d-%H.%M.%S"
 
         self.params = edict()
         self.imported_files = []
         self.set_timestamp()
+        self.log_format = log_format
+        
     
         if isinstance(script_name,str):
             self.script_name = script_name
@@ -44,19 +50,40 @@ class Note():
                     # 将来的に，ここをjupyterに対応させたい(改善点2)
                     warn("Please set a correct script name manually!")
                     warn("ex) note.script_name = xxx.ipynb")
-                    if safe_mode:
+                    if self.safe_mode:
                         raise RuntimeError("Failed to get script_name automatically.")
                     
             else:
                 self.script_name = temp
         else:
             raise RuntimeError("script_name is not a string.")
+        self.reproduction = False
+        if self.check_reproduction(os.getcwd()):
+            self._load_me()
+            self.reproduction = True
+            # change current directory to log_dir.
+            self.dir = self.current_dir
         self.current_dir = os.getcwd()
+        self.wrapup_done = False
+
+    def __del__(self):
+        self.wrapup(self.log_format)
+        
+    def check_reproduction(self,current_dir):
+        file = os.path.join(current_dir,self.PickleFileBaseName)
+        if os.path.exists(file):
+            warn("`note.pickle' file found in the current directory. Run in a reproduction mode.")
+            return True
+        return False
+    
     
     @property
-    def dirname(self):
+    def dirname(self):        
         base_name,_ = os.path.splitext(self.script_name)
-        return os.path.join(self.dir,"%s-%s"%(base_name,self.timestamp))
+        if self.reproduction:
+            return self.dir
+        else:
+            return os.path.join(self.dir,"%s-%s"%(base_name,self.timestamp))
     
     def makedirs(self):
         dirname = self.dirname
@@ -64,8 +91,6 @@ class Note():
             os.makedirs(dirname)
         return dirname
     
-    def local_modules(self):
-        return ImportManager(self)
     
     def set_timestamp(self,ts=None):
         if ts is None:
@@ -76,15 +101,18 @@ class Note():
     def get_timestamp(self):
         return self.timestamp
     
-    def safe_file_overwrite(self, path):
+    def _safe_file_overwrite(self, path):
         if os.path.isfile(path):
             warn("File is already exist: '%s'"%path)
-            if safe_mode:
+            if self.safe_mode:
                 raise RuntimeError("Stop the program. If you need to overwrite the above file, set safe_mode=False.")
             else:
                 warn("The above file will be overwritten. If prevent such an overwrite, set safe_mode=True")
 
     def set_params(self, params):
+        if self.reproduction:
+            warn("Caution: change parameters after using them may cause false reproduction results. Please be sure to call Note.set_params before starting experiment.")
+            return
         old_keys = list(self.params.keys())
         for k,v in params.items():
             if k in old_keys and self.params[k] is not None:
@@ -94,9 +122,15 @@ class Note():
                 warn("Overwrite %s: %s -> %s"%(k,self.params[k],params[k]))
             self.params[k] = v
             
-    def save(self):
+    def save(self,memo=None):
+        if self.reproduction:
+            warn("skip save function in a reproduction mode.")
+            return
         self._save_param(self.ParamFileBaseName)
         self._save_scripts()
+        if memo:
+            self._save_memo(memo,self.MemoFileBaseName)
+        self._save_me(self.PickleFileBaseName)
         
     def load_module(self,module,timestamp=None):
         # 指定された保存先ディレクトリのモジュールを読み込む．
@@ -104,17 +138,16 @@ class Note():
         raise NotImplementedError("実装待ち．カレントパスが優先されるなら，保存したmain scriptから実行するなら不要か？")
         pass
 
-    def save_result(self,sub_dir='results'):
+    def record(self,sub_dir=None):
         return SaveResult(self,sub_dir)
     
-    def wrapup(self,exit=False):
-        # 自分自身の実行結果をhtmlとして保存
-        
-        if exit:
-            sys.exit()
+
     
     def load(self,dirname):
-        self.load_param(os.join(dirname,self.ParamFileBaseName))        
+        if self.reproduction:
+            warn("skip load function in a reproduction mode.")
+            return
+        self._load_param(os.join(dirname,self.ParamFileBaseName))        
         
     def _save_scripts(self):
         self._copy_modules()        
@@ -127,8 +160,10 @@ class Note():
                 continue
             #print(k,v.__file__)
             mdir = v.__file__
+            if mdir == self.script_name:
+                continue            
             cpath = os.path.commonpath([self.current_dir,mdir])
-            if cpath =="/":
+            if cpath =="/": # test on Windows???
                 continue
             modules.append(mdir[mdir.find(cpath):])
         if len(modules)==0:
@@ -145,6 +180,8 @@ class Note():
             if not os.path.exists(dist_dir):
                 os.makedirs(dist_dir)
             shutil.copy2(mdir,dist)
+            utils.remove_write_permissions(dist)
+
             
     def _copy_main_script(self):
         dirname = self.makedirs()
@@ -155,6 +192,7 @@ class Note():
         else:
             dist = os.path.join(dirname,self.script_name)
             shutil.copy2(src,dist)
+            utils.remove_write_permissions(dist)
         
         
     def _save_param(self, base_name):
@@ -164,7 +202,7 @@ class Note():
         file = os.path.join(dirname,base_name)
         _, ext_name = os.path.splitext(base_name)
         ext_name=ext_name[1:]
-        self.safe_file_overwrite(file)        
+        self._safe_file_overwrite(file)        
         with open(file,'w') as f:
             if utils.case_ignore_in(ext_name,['yml','yaml']):                
                 yaml.dump(params,f,default_flow_style=False)
@@ -175,8 +213,50 @@ class Note():
             else:
                 warn("unknown extension '%s'"%ext_name)
                 warn("labnote.Note supports only 'yml/yaml', 'json', and 'pickle/pkl'")
-                  
-    def load_param(self,file):
+        utils.remove_write_permissions(file)
+       
+    def _save_memo(self,memo,base_name):
+        dirname = self.makedirs()
+        file = os.path.join(dirname,base_name)
+        self._safe_file_overwrite(file)        
+        with open(file,'w') as f:
+            f.write(memo)
+        utils.remove_write_permissions(file)
+        
+    def _load_me(self):
+        file = os.path.join(self.current_dir,self.PickleFileBaseName)
+        with open(file, 'rb') as f:
+            tmp_dict = pickle.load(f)
+        self.__dict__.clear()
+        self.__dict__.update(tmp_dict) 
+
+    def wrapup(self,to='html'):  
+        if self.wrapup_done:
+            return
+        if not utils.is_executed_on_ipython():
+            return
+        if to not in ['html','pdf']:
+            raise RuntimeError("Unsupported log type: `%s'"%to)
+        dirname = self.makedirs()
+        basename, _ = os.path.splitext(self.script_name)
+        file = os.path.join(dirname,"%s.%s"%(basename,to))
+        self._safe_file_overwrite(file)     
+        ipython = get_ipython()
+        ipython.system("jupyter nbconvert --to %s --output %s %s"%(to,file,self.script_name))
+        utils.remove_write_permissions(file)
+        self.wrapup_done = True
+
+        
+
+    def _save_me(self,base_name):
+        dirname = self.makedirs()
+        file = os.path.join(dirname,base_name)
+        self._safe_file_overwrite(file)        
+        with open(file, 'wb') as f:
+            pickle.dump(self.__dict__, f, 2)
+        utils.remove_write_permissions(file)
+        
+    def _load_param(self,file):
         if not os.path.isfile(path):
             warn("File not found: '%s'"%path)
             
@@ -196,15 +276,26 @@ class Note():
         self.set_params(new)
     
 class SaveResult():
-    def __init__(self,note,sub_dir):
+    def __init__(self,note,sub_dir=None):
         self.note=note
-        self.sub_dir = sub_dir
+        self.dirname = os.path.join(note.dirname,'results',dt.now().strftime(note.DateTimeFormat))
+        if sub_dir:
+            self.dirname = os.path.join(self.dirname,sub_dir)
         
     def __enter__(self):
-        dst_dir = os.path.join(note.dirname,sub_dir)
-        if os.path.exists(dirname):
-            
-        else:
-            os.makedirs(dirname)
-        return dst_dir
-
+        # create dir
+        if not os.path.exists(self.dirname):
+            os.makedirs(self.dirname)
+        return self.dirname
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        # make all files read-only
+        exist_file = False
+        for file in utils.find_all_files(self.dirname):
+            if os.path.isdir(file):
+                continue
+            utils.remove_write_permissions(file)
+            exist_file=True
+        if not exist_file:
+            warn("No file is produced. Remove the directory.")
+            os.rmdir(self.dirname)
