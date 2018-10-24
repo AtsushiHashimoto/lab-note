@@ -42,7 +42,7 @@ args = None
 script_name = None
 if ln.utils.is_executed_on_ipython():
     args = ['path/to/foo']
-    script_name = "examples.ipynb"
+    script_name = "examples.ipynb" # necessary only with password-authentifying jupyter.
 
 
 # # parse arguments and set the parameter to Note.
