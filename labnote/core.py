@@ -64,8 +64,8 @@ class Note():
             self._load_me()
             self.reproduction = True
             # change current directory to log_dir.
-            self.dir = self.current_dir
             self.current_dir = os.getcwd()
+            self.dir = self.current_dir
             self.wrapup_done = False
 
     def __del__(self):
