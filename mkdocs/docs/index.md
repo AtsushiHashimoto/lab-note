@@ -1,19 +1,8 @@
-# Welcome to Lab-Note Documentation
+## Accellarate your python experiments with Lab-Note!
 
-Lab. Note: The Python Experiment Support Toolkit.
+Lab-Note is a toolkit for experiments written in python language. It was developped to make your experimental trials recodable and reproducible.
 
-
-## Accellarate your python experiments.
-
-Lab. Note is a toolkit for experiments written in python language. It was developped to make your experimental trials recodable and reproducible.
-
-Read the documentation at [lab-note.io](https://lab-note.github.io).
-
-Lab note is tested on:
- - Python 3.6.5
- - Jupyter 5.4.1 (best with token authentification or no authentification.)
-
-## Getting Start
+## Quick Start
 
 ### Install
   %pip install git+https://github.com/AtsushiHashimoto/lab-note.git
@@ -22,3 +11,21 @@ Lab note is tested on:
   - [sample code](https://github.com/AtsushiHashimoto/lab-note/blob/master/examples.ipynb)
 
 
+## Archive
+This toolkit archive experiment in a timestamped directory, which consists of...
+
+ - params.yaml (all parameters of the experiment)
+ - &lt;&lt; script_name&gt;&gt; (main script of the experiment)
+ - &lt;&lt; modules &gt;&gt; (all imported modules under the main script's directory.)
+ - results (all experimental results)
+ - memo.txt (optional. A message hard-coded in the experiment.)
+ - note.pickle (pickled parameters to reproduce the experiments.)
+
+## Reproduce the experiment.
+ move to the archive directory, then run the main script.
+
+## Supported Environment
+Lab note is currently tested on:
+
+ - Python 3.6.5
+ - Jupyter 5.4.1 (best with token authentification or no authentification.)
