@@ -58,13 +58,15 @@ class Note():
         else:
             raise RuntimeError("script_name is not a string.")
         self.reproduction = False
+        self.current_dir = os.getcwd()
+        self.wrapup_done = False
         if self._check_reproduction(os.getcwd()):
             self._load_me()
             self.reproduction = True
             # change current directory to log_dir.
             self.dir = self.current_dir
-        self.current_dir = os.getcwd()
-        self.wrapup_done = False
+            self.current_dir = os.getcwd()
+            self.wrapup_done = False
 
     def __del__(self):
         self.wrapup(self.log_format)
