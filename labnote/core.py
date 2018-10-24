@@ -58,7 +58,7 @@ class Note():
         else:
             raise RuntimeError("script_name is not a string.")
         self.reproduction = False
-        if self.check_reproduction(os.getcwd()):
+        if self._check_reproduction(os.getcwd()):
             self._load_me()
             self.reproduction = True
             # change current directory to log_dir.
@@ -69,7 +69,7 @@ class Note():
     def __del__(self):
         self.wrapup(self.log_format)
         
-    def check_reproduction(self,current_dir):
+    def _check_reproduction(self,current_dir):
         file = os.path.join(current_dir,self.PickleFileBaseName)
         if os.path.exists(file):
             warn("`note.pickle' file found in the current directory. Run in a reproduction mode.")
