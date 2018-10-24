@@ -3,7 +3,7 @@
 
 # # python compatible autoreload
 
-# In[8]:
+# In[2]:
 
 
 
@@ -17,7 +17,7 @@ if '__IPYTHON__' in globals():
 # # import your original modules
 # !! Not use 'from xxx import func.' This disable lab-note to save your original modules automatically. 
 
-# In[2]:
+# In[3]:
 
 
 import labnote as ln
@@ -25,7 +25,7 @@ import labnote as ln
 
 # # Python/Jupyter compatible argument parser
 
-# In[3]:
+# In[4]:
 
 
 parser = ln.ArgumentParser(description='This script is a demo of lab-note.')
@@ -35,11 +35,11 @@ parser.add_argument('path_root_src',         action='store',         nargs=None,
 
 # # magics to make the code jupyter/python compatible
 
-# In[4]:
+# In[5]:
 
 
 args = None
-scrip_name = None
+script_name = None
 if ln.utils.is_executed_on_ipython():
     args = ['path/to/foo']
     script_name = "examples.ipynb"
@@ -47,7 +47,7 @@ if ln.utils.is_executed_on_ipython():
 
 # # parse arguments and set the parameter to Note.
 
-# In[5]:
+# In[6]:
 
 
 params = parser.parse_args(args)
@@ -57,7 +57,7 @@ note.set_params(params)
 
 # # save parameters before starting your experiment.
 
-# In[6]:
+# In[7]:
 
 
 note.save("Memo: this is a perfect experimental setting!")
@@ -66,7 +66,7 @@ note.save("Memo: this is a perfect experimental setting!")
 # # save experimental results safely
 # 'note.record()' makes result directory with timestamp.
 
-# In[7]:
+# In[8]:
 
 
 import os.path
@@ -79,8 +79,9 @@ with note.record() as dst_dir:
 # # close session
 # exit() calls note destructor, which save the jupyter log as an .html file in the `exp_log' directory.
 
-# In[ ]:
+# In[11]:
 
 
 exit()
+#note.wrapup()
 
