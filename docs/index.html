@@ -59,6 +59,10 @@
         
             <li><a class="toctree-l3" href="#accellarate-your-python-experiments">Accellarate your python experiments.</a></li>
         
+            <li><a class="toctree-l3" href="#archive">Archive</a></li>
+        
+            <li><a class="toctree-l3" href="#reproduce-the-experiment">Reproduce the experiment.</a></li>
+        
             <li><a class="toctree-l3" href="#getting-start">Getting Start</a></li>
         
         </ul>
@@ -117,12 +121,21 @@
 <p>Lab note is tested on:
  - Python 3.6.5
  - Jupyter 5.4.1 (best with token authentification or no authentification.)</p>
+<h2 id="archive">Archive</h2>
+<p>This toolkit archive experiment in a timestamped directory, which consists of...</p>
+<ul>
+<li>params.yaml (all parameters of the experiment)</li>
+<li>&lt;<script_name>&gt; (main script of the experiment)</li>
+<li>&lt;<modules>&gt; (all imported modules under the main script's directory.)</li>
+<li>results (all experimental results)</li>
+<li>memo.txt (optional. A message hard-coded in the experiment.)</li>
+<li>note.pickle (pickled parameters to reproduce the experiments.)</li>
+</ul>
+<h2 id="reproduce-the-experiment">Reproduce the experiment.</h2>
+<p>move to the archive directory, then run the main script.</p>
 <h2 id="getting-start">Getting Start</h2>
 <h3 id="install">Install</h3>
-<div class="codehilite" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #a6e22e">%pip</span> <span style="color: #f8f8f2">install</span> <span style="color: #f8f8f2">git</span><span style="color: #f92672">+</span><span style="color: #f8f8f2">https:</span><span style="color: #75715e">//github.com/AtsushiHashimoto/lab-note.git</span>
-</pre></div>
-
-
+<p>%pip install git+https://github.com/AtsushiHashimoto/lab-note.git</p>
 <h3 id="how-to-use">How to use?</h3>
 <ul>
 <li><a href="https://github.com/AtsushiHashimoto/lab-note/blob/master/examples.ipynb">sample code</a></li>
@@ -175,5 +188,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2018-10-24 09:20:13
+Build Date UTC : 2018-10-24 10:16:34
 -->
