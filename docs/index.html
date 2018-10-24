@@ -53,19 +53,27 @@
     <a class="current" href=".">Home</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#welcome-to-lab-note-documentation">Welcome to Lab-Note Documentation</a></li>
+    <li class="toctree-l2"><a href="#accellarate-your-python-experiments-with-lab-note">Accellarate your python experiments with Lab-Note!</a></li>
+    
+
+    <li class="toctree-l2"><a href="#quick-start">Quick Start</a></li>
     
         <ul>
         
-            <li><a class="toctree-l3" href="#accellarate-your-python-experiments">Accellarate your python experiments.</a></li>
+            <li><a class="toctree-l3" href="#install">Install</a></li>
         
-            <li><a class="toctree-l3" href="#archive">Archive</a></li>
-        
-            <li><a class="toctree-l3" href="#reproduce-the-experiment">Reproduce the experiment.</a></li>
-        
-            <li><a class="toctree-l3" href="#getting-start">Getting Start</a></li>
+            <li><a class="toctree-l3" href="#how-to-use">How to use?</a></li>
         
         </ul>
+    
+
+    <li class="toctree-l2"><a href="#archive">Archive</a></li>
+    
+
+    <li class="toctree-l2"><a href="#reproduce-the-experiment">Reproduce the experiment.</a></li>
+    
+
+    <li class="toctree-l2"><a href="#supported-environment">Supported Environment</a></li>
     
 
     </ul>
@@ -113,32 +121,32 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="welcome-to-lab-note-documentation">Welcome to Lab-Note Documentation</h1>
-<p>Lab. Note: The Python Experiment Support Toolkit.</p>
-<h2 id="accellarate-your-python-experiments">Accellarate your python experiments.</h2>
-<p>Lab. Note is a toolkit for experiments written in python language. It was developped to make your experimental trials recodable and reproducible.</p>
-<p>Read the documentation at <a href="https://lab-note.github.io">lab-note.io</a>.</p>
-<p>Lab note is tested on:
- - Python 3.6.5
- - Jupyter 5.4.1 (best with token authentification or no authentification.)</p>
+                <h2 id="accellarate-your-python-experiments-with-lab-note">Accellarate your python experiments with Lab-Note!</h2>
+<p>Lab-Note is a toolkit for experiments written in python language. It was developped to make your experimental trials recodable and reproducible.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="install">Install</h3>
+<p>%pip install git+https://github.com/AtsushiHashimoto/lab-note.git</p>
+<h3 id="how-to-use">How to use?</h3>
+<ul>
+<li><a href="https://github.com/AtsushiHashimoto/lab-note/blob/master/examples.ipynb">sample code</a></li>
+</ul>
 <h2 id="archive">Archive</h2>
 <p>This toolkit archive experiment in a timestamped directory, which consists of...</p>
 <ul>
 <li>params.yaml (all parameters of the experiment)</li>
-<li>&lt;<script_name>&gt; (main script of the experiment)</li>
-<li>&lt;<modules>&gt; (all imported modules under the main script's directory.)</li>
+<li>&lt;&lt; script_name&gt;&gt; (main script of the experiment)</li>
+<li>&lt;&lt; modules &gt;&gt; (all imported modules under the main script's directory.)</li>
 <li>results (all experimental results)</li>
 <li>memo.txt (optional. A message hard-coded in the experiment.)</li>
 <li>note.pickle (pickled parameters to reproduce the experiments.)</li>
 </ul>
 <h2 id="reproduce-the-experiment">Reproduce the experiment.</h2>
 <p>move to the archive directory, then run the main script.</p>
-<h2 id="getting-start">Getting Start</h2>
-<h3 id="install">Install</h3>
-<p>%pip install git+https://github.com/AtsushiHashimoto/lab-note.git</p>
-<h3 id="how-to-use">How to use?</h3>
+<h2 id="supported-environment">Supported Environment</h2>
+<p>Lab note is currently tested on:</p>
 <ul>
-<li><a href="https://github.com/AtsushiHashimoto/lab-note/blob/master/examples.ipynb">sample code</a></li>
+<li>Python 3.6.5</li>
+<li>Jupyter 5.4.1 (best with token authentification or no authentification.)</li>
 </ul>
               
             </div>
@@ -188,5 +196,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2018-10-24 10:16:34
+Build Date UTC : 2018-10-24 10:31:09
 -->
