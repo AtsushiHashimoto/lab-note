@@ -8,10 +8,12 @@ import warnings
 import stat
 
 def is_executed_on_ipython():
-    if "ipykernel_launcher.py" in sys.argv[0]:
-        return True
-    return False
-
+    try:
+        if "ipykernel_launcher.py" in sys.argv[0]:
+            return True
+        return False
+    except:
+        return False
 
 def case_ignore_in(test, L):
     test = test.lower()
