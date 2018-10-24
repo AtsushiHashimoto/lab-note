@@ -16,7 +16,7 @@ Lab note is tested on:
 ## Getting Start
 
 ### Install
-    %pip install git+https://github.com/AtsushiHashimoto/lab-note.git
+  %pip install git+https://github.com/AtsushiHashimoto/lab-note.git
 
 ### How to use?
   - [sample code](https://github.com/AtsushiHashimoto/lab-note/blob/master/examples.ipynb)

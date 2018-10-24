@@ -1,5 +1,6 @@
 # class ArgumentParser
-
+<div style="text-align: right"> [[code](https://github.com/AtsushiHashimoto/lab-note/blob/c8c1a1fc4df8ac0e5cbccf4e1aa2a93c8099d6f2/labnote/argparse.py#L6)]
+</div>
 ArgumentParser is a python/jupyter compatible argument parser.
 
 ## functions
@@ -10,6 +11,7 @@ The interfaces of all functions are the same with argparse.ArgumentParser.
 
 You need only commenting out built-in argparse, and import labnote.Argumentparser.
 
+```
     #from argparse import ArgumentParser # <- comment out!
     from lab-note import ArgumentParser # <- add this line!
 
@@ -35,3 +37,4 @@ You need only commenting out built-in argparse, and import labnote.Argumentparse
 
     params = parser.parse_args()
     print(params)
+```
