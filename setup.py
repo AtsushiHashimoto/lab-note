@@ -14,6 +14,6 @@ setup(
         keywords         = 'laboratory note, experiments, archive',
         packages         = find_packages(),
 	include_package_data = True,
-        install_requires = ['easydict','json','yaml'],
+        install_requires = ['easydict'],
         )
  
