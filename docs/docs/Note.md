@@ -1,22 +1,14 @@
 # class Note
-
 Note records your experimental parameters, results, and note into a timestamped directly safely.
 
-## set_params(dict)
 
-## save()
+## Note.set_params(dict)
+set parameters related to your experiments.
 
-## get_result_file():
+## Note.save()
+save the main script, your original modules, and all parameters to a timestamped directly.
+The timestamp is generated in the constructor.
 
-    with note.get_result_file() as f:
-        save_your_result(f)
-
-
-## get_result_dir()
-
-    with note.get_result_dir() as dir:
-        with open("%s/result.csv"%dir,'w') as f:
-            save_your_result(f)
-        with open("%s/result.json"%dir,'w') as f:
-            save_your_reulst2(f)
-
+## Note.record()
+generate a timestamped directory, which is used to store all experimental results at a trial.
+The timestamp is generated in this function call.
