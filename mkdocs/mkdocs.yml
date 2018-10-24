@@ -1,0 +1,15 @@
+site_name: Lab. Note Documentation
+theme: readthedocs
+
+site_dir: ../docs
+
+markdown_extensions:
+  - codehilite:
+      use_pygments: true
+      noclasses: true
+      pygments_style: monokai
+
+nav:
+  - 'Home': 'index.md'
+  - 'Note': 'Note.md'
+  - 'ArgumentParser': 'ArgumentParser.md'
