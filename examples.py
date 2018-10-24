@@ -73,7 +73,7 @@ import os.path
 with note.record() as dst_dir:
     print(dst_dir)
     with open(os.path.join(dst_dir,"test.txt"),'w') as f:
-        f.write("a great result!!")
+        f.write("a great result!!\n")
 
 
 # # close session
