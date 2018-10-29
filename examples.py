@@ -97,10 +97,10 @@ with open(os.path.join(last_exp_log,'test.txt')) as f:
         print(l)
 
 
-# In[8]:
+# In[9]:
 
 
-with open(os.path.join(last_exp_log,'.timestamp')) as f:
+with open(os.path.join(last_exp_log,'timestamp')) as f:
     for l in f:
         print(l)
 
@@ -108,7 +108,7 @@ with open(os.path.join(last_exp_log,'.timestamp')) as f:
 # # close session
 # exit() calls note destructor, which save the jupyter log as an .html file in the `exp_log' directory.
 
-# In[9]:
+# In[ ]:
 
 
 exit()
