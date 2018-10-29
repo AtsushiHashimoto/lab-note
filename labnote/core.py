@@ -141,7 +141,7 @@ class Note():
         pass
 
     def record(self,sub_dir=None):
-        return SaveResult(self,sub_dir)
+        return NoteDir(self,sub_dir)
     
 
     
@@ -277,27 +277,44 @@ class Note():
                     raise RuntimeError('failed to load params')
         self.set_params(new)
     
-class SaveResult():
+class NoteDir():
     def __init__(self,note,sub_dir=None):
+        self.DateTimeFormat = "%Y%m%d-%H.%M.%S.%f"
         self.note=note
-        self.dirname = os.path.join(note.dirname,'results',dt.now().strftime(note.DateTimeFormat))
+        self.dirname = os.path.join(note.dirname,'results',dt.now().strftime(self.DateTimeFormat))
         if sub_dir:
             self.dirname = os.path.join(self.dirname,sub_dir)
+            
+        self.opened_dirname = None
         
     def __enter__(self):
+        return self.open()
+    
+    def open(self,dirname=None):
         # create dir
-        if not os.path.exists(self.dirname):
-            os.makedirs(self.dirname)
-        return self.dirname
+        if dirname is None:
+            dirname = self.dirname
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+        else:
+            warn('%s is already exists. Files in the directory should not be overwritten!!'%dirname)
+            if self.note.safe_mode:
+                raise RuntimeError('result recording directory was unexpectedly opened twice.')
+        self.opened_dirname = dirname
+        return self
     
     def __exit__(self, exc_type, exc_value, traceback):
+        return self.close()
+    
+    def close(self):
         # make all files read-only
         exist_file = False
-        for file in utils.find_all_files(self.dirname):
+        for file in utils.find_all_files(self.opened_dirname):
             if os.path.isdir(file):
                 continue
             utils.remove_write_permissions(file)
             exist_file=True
         if not exist_file:
             warn("No file is produced. Remove the directory.")
-            os.rmdir(self.dirname)
+            os.rmdir(self.opened_dirname)
+        self.opened_dirname = None

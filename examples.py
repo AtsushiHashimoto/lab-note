@@ -1,85 +1,104 @@
 
 # coding: utf-8
 
-# # python compatible autoreload
-
-# In[2]:
-
-
-
-from IPython import get_ipython
-ipython = get_ipython()
-if '__IPYTHON__' in globals():
-    ipython.magic('load_ext autoreload')
-    ipython.magic('autoreload 2')
-
-
 # # import your original modules
 # !! Not use 'from xxx import func.' This disable lab-note to save your original modules automatically. 
 
-# In[3]:
+# In[1]:
 
 
-import labnote as ln
+#import my_precious_module #<- your module files/directories must be placed under the current directly.
+import labnote as lb
 
 
 # # Python/Jupyter compatible argument parser
 
-# In[4]:
+# In[2]:
 
 
-parser = ln.ArgumentParser(description='This script is a demo of lab-note.')
+parser = lb.ArgumentParser(description='This script is a demo of lab-note. Calculate std. dev. of a distribution obtained by sum of two normal dist N(0,alpha),N(0,beta).')
 
-parser.add_argument('path_root_src',         action='store',         nargs=None,         const=None,         default=None,         type=str,         choices=None,         help='Directory path where your taken photo files are located.',         metavar=None)
+parser.add_argument('alpha',         type=float,         help='std. dev. of the first normal distribution')
+parser.add_argument('--beta',         type=float,         default=1.0,
+        help='std. dev. of the second normal distribution')
+parser.add_argument('-N', '--N',        type=int,         default=100,
+        help='# of samples')
 
 
 # # magics to make the code jupyter/python compatible
 
-# In[5]:
+# In[11]:
 
 
 args = None
 script_name = None
-if ln.utils.is_executed_on_ipython():
-    args = ['path/to/foo']
+if lb.utils.is_executed_on_ipython():
+    args = ['1.0'] #<- to emurate command line option, values must be given as str type values.
     script_name = "examples.ipynb" # necessary only with password-authentifying jupyter.
 
 
 # # parse arguments and set the parameter to Note.
 
-# In[6]:
+# In[12]:
 
 
+note = lb.Note('./exp_log',
+               safe_mode=True, # set False during debugging.
+               script_name=script_name)
 params = parser.parse_args(args)
-note = ln.Note('./exp_log',script_name=script_name)
 note.set_params(params)
 
 
 # # save parameters before starting your experiment.
 
-# In[7]:
+# In[9]:
 
 
 note.save("Memo: this is a perfect experimental setting!")
 
 
-# # save experimental results safely
+# # save experimental results safely (in two ways)
 # 'note.record()' makes result directory with timestamp.
 
-# In[8]:
+# In[36]:
 
 
 import os.path
-with note.record() as dst_dir:
-    print(dst_dir)
-    with open(os.path.join(dst_dir,"test.txt"),'w') as f:
-        f.write("a great result!!\n")
+import numpy as np
+from numpy.random import randn
+
+
+with note.record() as rec:
+    print(rec.dirname)
+    x1 = randn(note.params.N)*note.params.alpha
+    x2 = randn(note.params.N)*note.params.beta
+    x = x1+x2
+    ideal_sigma = np.sqrt(note.params.alpha**2 + note.params.beta**2)
+    real_sigma = np.sqrt(np.var(x))
+    with open(os.path.join(rec.dirname,"test.txt"),'w') as f:
+        f.write("ideal_sigma: %f\n"%ideal_sigma)
+        f.write("real_sigma: %f\n"%real_sigma)
+    last_exp_log = rec.dirname
+
+# The above code can be replaced to the following style.
+# rec = note.record()
+# rec.open()
+# ...
+# rec.close()
+
+
+# In[37]:
+
+
+with open(os.path.join(last_exp_log,'test.txt')) as f:
+    for l in f:
+        print(l)
 
 
 # # close session
 # exit() calls note destructor, which save the jupyter log as an .html file in the `exp_log' directory.
 
-# In[11]:
+# In[38]:
 
 
 exit()
