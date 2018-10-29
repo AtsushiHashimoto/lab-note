@@ -301,20 +301,33 @@ class NoteDir():
             if self.note.safe_mode:
                 raise RuntimeError('result recording directory was unexpectedly opened twice.')
         self.opened_dirname = dirname
+        self.timestamp('Start record')
         return self
     
     def __exit__(self, exc_type, exc_value, traceback):
         return self.close()
     
+    def timestamp(self,comment):
+        file = os.path.join(self.dirname,'.timestamp')
+        mode = 'a'
+        if not os.path.exists(file):
+            mode = 'w'
+        with open(file,mode) as f:
+            f.write("%s, %s\n"%(comment,dt.now().strftime(self.DateTimeFormat)))
+        
     def close(self):
         # make all files read-only
         exist_file = False
         for file in utils.find_all_files(self.opened_dirname):
             if os.path.isdir(file):
                 continue
+            if os.path.basename(file)=='.timestamp':
+                continue
             utils.remove_write_permissions(file)
             exist_file=True
         if not exist_file:
             warn("No file is produced. Remove the directory.")
             os.rmdir(self.opened_dirname)
+        else:
+            self.timestamp('End record')
         self.opened_dirname = None

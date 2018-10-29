@@ -7,6 +7,7 @@
 # In[1]:
 
 
+# coding=utf-8
 #import my_precious_module #<- your module files/directories must be placed under the current directly.
 import labnote as lb
 
@@ -27,7 +28,7 @@ parser.add_argument('-N', '--N',        type=int,         default=100,
 
 # # magics to make the code jupyter/python compatible
 
-# In[11]:
+# In[3]:
 
 
 args = None
@@ -39,11 +40,11 @@ if lb.utils.is_executed_on_ipython():
 
 # # parse arguments and set the parameter to Note.
 
-# In[12]:
+# In[4]:
 
 
 note = lb.Note('./exp_log',
-               safe_mode=True, # set False during debugging.
+               safe_mode=False, # set False during debugging.
                script_name=script_name)
 params = parser.parse_args(args)
 note.set_params(params)
@@ -51,7 +52,7 @@ note.set_params(params)
 
 # # save parameters before starting your experiment.
 
-# In[9]:
+# In[5]:
 
 
 note.save("Memo: this is a perfect experimental setting!")
@@ -60,7 +61,7 @@ note.save("Memo: this is a perfect experimental setting!")
 # # save experimental results safely (in two ways)
 # 'note.record()' makes result directory with timestamp.
 
-# In[36]:
+# In[6]:
 
 
 import os.path
@@ -75,6 +76,7 @@ with note.record() as rec:
     x = x1+x2
     ideal_sigma = np.sqrt(note.params.alpha**2 + note.params.beta**2)
     real_sigma = np.sqrt(np.var(x))
+    rec.timestamp('Record timestamp here')
     with open(os.path.join(rec.dirname,"test.txt"),'w') as f:
         f.write("ideal_sigma: %f\n"%ideal_sigma)
         f.write("real_sigma: %f\n"%real_sigma)
@@ -87,7 +89,7 @@ with note.record() as rec:
 # rec.close()
 
 
-# In[37]:
+# In[7]:
 
 
 with open(os.path.join(last_exp_log,'test.txt')) as f:
@@ -95,10 +97,18 @@ with open(os.path.join(last_exp_log,'test.txt')) as f:
         print(l)
 
 
+# In[8]:
+
+
+with open(os.path.join(last_exp_log,'.timestamp')) as f:
+    for l in f:
+        print(l)
+
+
 # # close session
 # exit() calls note destructor, which save the jupyter log as an .html file in the `exp_log' directory.
 
-# In[38]:
+# In[9]:
 
 
 exit()

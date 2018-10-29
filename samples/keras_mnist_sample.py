@@ -1,46 +1,44 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import labnote as lb
 import os
 
 
-# In[3]:
+# In[2]:
 
 
 parser = lb.ArgumentParser()
-parser.add_argument('epochs',type=int)
+parser.add_argument('--epochs',type=int,default=20)
 parser.add_argument('--batch_size',type=int,default=128)
 parser.add_argument('--gpu_dev',type=str,default='0')
 
-args = None
-script_name=None  # <- required only for jupyter with password authentification
-if lb.utils.is_executed_on_ipython():
-    args = ['20']
-    script_name = 'keras_mnist_sample.ipynb'
-
-params = parser.parse_args(args=args)
+params = parser.parse_args()
 
 
-# In[4]:
+# In[3]:
 
 
 params.num_classes = 10
+
+script_name=None  # <- required only for jupyter with password authentification
+if lb.utils.is_executed_on_ipython():
+    script_name = 'keras_mnist_sample.ipynb'
 note = lb.Note('./log_dir',script_name=script_name)
 note.set_params(params)
 
 
-# In[7]:
+# In[4]:
 
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
 os.environ["CUDA_VISIBLE_DEVICES"] = note.params.gpu_dev
 
 
-# In[8]:
+# In[5]:
 
 
 '''Trains a simple deep NN on the MNIST dataset.
@@ -57,7 +55,7 @@ from keras.optimizers import RMSprop
 from keras.callbacks import ModelCheckpoint, CSVLogger
 
 
-# In[9]:
+# In[6]:
 
 
 # the data, split between train and test sets
@@ -90,13 +88,13 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[10]:
+# In[7]:
 
 
 note.save(memo='sample code for keras mnist. I just want to explain how to use note with general deep learning framework.')
 
 
-# In[11]:
+# In[ ]:
 
 
 with note.record() as rec:
