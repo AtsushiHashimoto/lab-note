@@ -221,8 +221,8 @@ class Note():
         dirname = self.makedirs()
         file = os.path.join(dirname,base_name)
         self._safe_file_overwrite(file)        
-        with open(file,'w') as f:
-            f.write(memo)
+        with open(file,'wb') as f:
+            f.write(memo.encode('utf-8'))
         utils.remove_write_permissions(file)
         
     def _load_me(self):
