@@ -308,7 +308,7 @@ class NoteDir():
         return self.close()
     
     def timestamp(self,comment):
-        file = os.path.join(self.dirname,'.timestamp')
+        file = os.path.join(self.dirname,'timestamp')
         mode = 'a'
         if not os.path.exists(file):
             mode = 'w'
@@ -321,7 +321,7 @@ class NoteDir():
         for file in utils.find_all_files(self.opened_dirname):
             if os.path.isdir(file):
                 continue
-            if os.path.basename(file)=='.timestamp':
+            if os.path.basename(file)=='timestamp':
                 continue
             utils.remove_write_permissions(file)
             exist_file=True
