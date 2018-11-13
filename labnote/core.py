@@ -287,6 +287,15 @@ class NoteDir():
             
         self.opened_dirname = None
         
+    def getpath(basename):
+        return os.path.join(self.dirname,basename)
+    
+    def mkdir(basepath):
+        dirname = self.getpath(basepath)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+        return dirname
+            
     def __enter__(self):
         return self.open()
     
