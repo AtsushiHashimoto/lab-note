@@ -259,10 +259,11 @@ class Note():
         utils.remove_write_permissions(file)
         
     def _load_param(self,file):
-        if not os.path.isfile(path):
-            warn("File not found: '%s'"%path)
+        if not os.path.isfile(file):
+            warn("File not found: '%s'"%file)
             
         _, ext_name = os.path.splitext(file)
+        ext_name=ext_name[1:]
         with open(file,'r+') as f:
             if utils.case_ignore_in(ext_name,['yml','yaml']):
                 new = yaml.load(f)
@@ -322,7 +323,9 @@ class NoteDir():
         if not os.path.exists(file):
             mode = 'w'
         with open(file,mode) as f:
-            f.write("%s, %s\n"%(comment,dt.now().strftime(self.DateTimeFormat)))
+            time=dt.now().strftime(self.DateTimeFormat)
+            print("%s, %s\n"%(comment,time))
+            f.write("%s, %s\n"%(comment,time))
         
     def close(self):
         # make all files read-only
