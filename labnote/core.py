@@ -149,7 +149,7 @@ class Note():
         if self.reproduction:
             warn("skip load function in a reproduction mode.")
             return
-        self._load_param(os.join(dirname,self.ParamFileBaseName))        
+        self._load_param(os.path.join(dirname,self.ParamFileBaseName))        
         
     def _save_scripts(self):
         self._copy_modules()        
