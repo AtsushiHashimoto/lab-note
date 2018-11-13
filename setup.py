@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 from setuptools import setup, find_packages, Extension
-from hyper_feature_coding import __author__, __version__, __license__
+from labnote import __author__, __version__, __license__
  
 setup(
         name             = 'lab-note',
