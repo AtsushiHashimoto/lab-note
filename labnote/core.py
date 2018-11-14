@@ -349,7 +349,7 @@ class NoteDir():
         
     def close(self):
         if self.opened_dirname is None:
-            waranings.warn('You must open the recording directory before close it.')
+            warnings.warn('You must open the recording directory before close it.')
             return 
         # make all files read-only
         exist_file = False
