@@ -9,6 +9,9 @@ from warnings import warn
 from datetime import datetime as dt
 import shutil
 import inspect
+import pip
+
+from subprocess import check_call
 
 from IPython import get_ipython
 
@@ -61,6 +64,8 @@ class Note():
         self.current_dir = os.getcwd()
         self.wrapup_done = False
         if self._check_reproduction(os.getcwd()):
+            # requirementsのdiffを表示させたい(改善点3)
+            
             self._load_me()
             self.reproduction = True
             # change current directory to log_dir.
@@ -152,10 +157,12 @@ class Note():
         self._load_param(os.path.join(dirname,self.ParamFileBaseName))        
         
     def _save_scripts(self):
-        self._copy_modules()        
         self._copy_main_script()
+        self._copy_modules()        
+        
         
     def _copy_modules(self):
+        dirname = self.makedirs()
         modules = []
         for k,v in sys.modules.items():
             if not hasattr(v,'__file__'):        
@@ -165,12 +172,16 @@ class Note():
             if mdir == self.script_name:
                 continue            
             cpath = os.path.commonpath([self.current_dir,mdir])
-            if cpath =="/": # test on Windows???
+            if cpath == os.sep: # os.sep = '\' in ubuntu/mac and '/' in windows.
                 continue
             modules.append(mdir[mdir.find(cpath):])
+
+        # generate requirements.txt
+        check_call(['pipreqs','--encoding','utf-8','--save',os.path.join(dirname,'requirements.txt'),dirname])
+        
+        # copy all original modules
         if len(modules)==0:
             return
-        dirname = self.makedirs()
         #print(dirname)
         cd_len = len(self.current_dir)
         for mdir in modules:
@@ -183,8 +194,10 @@ class Note():
                 os.makedirs(dist_dir)
             shutil.copy2(mdir,dist)
             utils.remove_write_permissions(dist)
-
             
+        basename,_ = os.path.splitext(self.script_name)
+           
+
     def _copy_main_script(self):
         dirname = self.makedirs()
         src = os.path.join(self.current_dir,self.script_name)
@@ -195,6 +208,13 @@ class Note():
             dist = os.path.join(dirname,self.script_name)
             shutil.copy2(src,dist)
             utils.remove_write_permissions(dist)
+        _,ext = os.path.splitext(self.script_name)
+
+        if not utils.is_executed_on_ipython():
+            return
+        script_py_path = os.path.join(dirname,utils.replace_ext(self.script_name,'.py'))
+        ipython = get_ipython()
+        ipython.system("jupyter nbconvert --to script --output %s %s"%(script_py_path,self.script_name))
         
         
     def _save_param(self, base_name):
@@ -328,6 +348,9 @@ class NoteDir():
             f.write("%s, %s\n"%(comment,time))
         
     def close(self):
+        if self.opened_dirname is None:
+            waranings.warn('You must open the recording directory before close it.')
+            return 
         # make all files read-only
         exist_file = False
         for file in utils.find_all_files(self.opened_dirname):

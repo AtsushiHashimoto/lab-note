@@ -9,6 +9,7 @@
 
 # coding=utf-8
 #import my_precious_module #<- your module files/directories must be placed under the current directly.
+
 import labnote as lb
 
 
@@ -77,32 +78,51 @@ with note.record() as rec:
     ideal_sigma = np.sqrt(note.params.alpha**2 + note.params.beta**2)
     real_sigma = np.sqrt(np.var(x))
     rec.timestamp('Record timestamp here')
-    with open(os.path.join(rec.dirname,"test.txt"),'w') as f:
+    with open(rec.getpath("test.txt"),'w') as f:
         f.write("ideal_sigma: %f\n"%ideal_sigma)
         f.write("real_sigma: %f\n"%real_sigma)
     last_exp_log = rec.dirname
 
 # The above code can be replaced to the following style.
-# rec = note.record()
+rec = note.record()
 # rec.open()
 # ...
 # rec.close()
 
 
-# In[7]:
+# # show records
+
+# In[8]:
 
 
+print('test.txt (calculation result)')
+print('---------------')
 with open(os.path.join(last_exp_log,'test.txt')) as f:
     for l in f:
         print(l)
+print('---------------')
 
 
 # In[9]:
 
 
+print('timestamp')
+print('---------------')
 with open(os.path.join(last_exp_log,'timestamp')) as f:
     for l in f:
         print(l)
+print('---------------')
+
+
+# In[10]:
+
+
+print('requirements.txt')
+print('---------------')
+with open(os.path.join(note.makedirs(),'requirements.txt')) as f:
+    for l in f:
+        print(l)
+print('---------------')
 
 
 # # close session
@@ -111,6 +131,6 @@ with open(os.path.join(last_exp_log,'timestamp')) as f:
 # In[ ]:
 
 
-exit()
 #note.wrapup()
+#exit()
 

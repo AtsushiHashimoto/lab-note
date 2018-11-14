@@ -49,6 +49,10 @@ def remove_write_permissions(path):
     current_permissions = stat.S_IMODE(os.lstat(path).st_mode)
     os.chmod(path, current_permissions & NO_WRITING)
 
+def replace_ext(path,ext):
+    base,_ = os.path.splitext(path)
+    return base + ext
+    
 def find_all_files(directory):
     for root, dirs, files in os.walk(directory):
         yield root
