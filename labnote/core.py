@@ -42,24 +42,21 @@ class Note():
         self.log_format = log_format
         
     
-        if isinstance(script_name,str):
-            self.script_name = script_name
-        elif script_name is None:
-            temp = inspect.currentframe().f_back.f_code.co_filename
-            if temp[0]=='<' and temp[-1]=='>':
-                self.script_name = utils.get_notebook_name()
-                if self.script_name is None:
-                    # if called from ipython, temp should be like "<ipython-input-15-23f3d88a70cc>"
-                    # 将来的に，ここをjupyterに対応させたい(改善点2)
+        if utils.is_executed_on_ipython():
+            self.script_name = utils.get_notebook_name()
+            if self.script_name is None:
+                # if called from ipython, temp should be like "<ipython-input-15-23f3d88a70cc>"
+                # 将来的に，ここをjupyterに対応させたい(改善点2)
+                if isinstance(script_name,str):
+                    self.script_name = script_name
+                elif self.safe_mode:
                     warn("Please set a correct script name manually!")
                     warn("ex) note.script_name = xxx.ipynb")
-                    if self.safe_mode:
-                        raise RuntimeError("Failed to get script_name automatically.")
-                    
-            else:
-                self.script_name = temp
+                    raise RuntimeError("Failed to get script_name automatically. Set your script file name to 'script_name'.")
+            
         else:
-            raise RuntimeError("script_name is not a string.")
+            self.script_name = inspect.currentframe().f_back.f_code.co_filename
+            
         self.reproduction = False
         self.current_dir = os.getcwd()
         self.wrapup_done = False
