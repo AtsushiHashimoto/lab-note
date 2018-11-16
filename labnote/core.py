@@ -49,10 +49,12 @@ class Note():
                 # 将来的に，ここをjupyterに対応させたい(改善点2)
                 if isinstance(script_name,str):
                     self.script_name = script_name
-                elif self.safe_mode:
-                    warn("Please set a correct script name manually!")
+                else:                    
+                    warn("Please set your script file name to 'script_name'.")
                     warn("ex) note.script_name = xxx.ipynb")
-                    raise RuntimeError("Failed to get script_name automatically. Set your script file name to 'script_name'.")
+                    warn("NOTE: This warning may happen if you are using jupyter in a docker, and access via port-forwarding. Using jupyter with password authentification can be another possibility.")
+                    if self.safe_mode:
+                        raise RuntimeError("Failed to get script_name automatically.")
             
         else:
             self.script_name = inspect.currentframe().f_back.f_code.co_filename
@@ -209,9 +211,10 @@ class Note():
 
         if not utils.is_executed_on_ipython():
             return
-        script_py_path = os.path.join(dirname,utils.replace_ext(self.script_name,'.py'))
+        script_head,_ = os.path.splitext(self.script_name)
+        script_head = os.path.join(dirname,script_head)
         ipython = get_ipython()
-        ipython.system("jupyter nbconvert --to script --output %s %s"%(script_py_path,self.script_name))
+        ipython.system("jupyter nbconvert --to script --output %s %s"%(script_head,self.script_name))
         
         
     def _save_param(self, base_name):
@@ -346,7 +349,7 @@ class NoteDir():
         
     def close(self):
         if self.opened_dirname is None:
-            warnings.warn('You must open the recording directory before close it.')
+            warn('You must open the recording directory before close it.')
             return 
         # make all files read-only
         exist_file = False
