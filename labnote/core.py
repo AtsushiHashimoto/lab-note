@@ -176,7 +176,10 @@ class Note():
             modules.append(mdir[mdir.find(cpath):])
 
         # generate requirements.txt
-        check_call(['pipreqs','--encoding','utf-8','--save',os.path.join(dirname,'requirements.txt'),dirname])
+        try:
+            check_call(['pipreqs','--encoding','utf-8','--save',os.path.join(dirname,'requirements.txt'),dirname])
+        except:
+            warn("Failed to pipreqs, which generates 'requirements.txt'. Typically, this is caused by a syntax error in your code.")
         
         # copy all original modules
         if len(modules)==0:
@@ -211,8 +214,10 @@ class Note():
 
         if not utils.is_executed_on_ipython():
             return
+        
+        
         script_head,_ = os.path.splitext(self.script_name)
-        script_head = os.path.join(dirname,script_head)
+        script_head = os.path.join(dirname,script_head)        
         ipython = get_ipython()
         ipython.system("jupyter nbconvert --to script --output %s %s"%(script_head,self.script_name))
         
