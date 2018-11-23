@@ -34,6 +34,7 @@ parser.add_argument('-N', '--N',        type=int,         default=100,
 
 args = None
 script_name = None
+
 if lb.utils.is_executed_on_ipython():
     args = ['1.0'] #<- to emurate command line option, values must be given as str type values.
     script_name = "examples.ipynb" # necessary only with password-authentifying jupyter.
@@ -62,7 +63,7 @@ note.save("Memo: this is a perfect experimental setting!")
 # # save experimental results safely (in two ways)
 # 'note.record()' makes result directory with timestamp.
 
-# In[6]:
+# In[ ]:
 
 
 import os.path
@@ -92,7 +93,7 @@ rec = note.record()
 
 # # show records
 
-# In[8]:
+# In[ ]:
 
 
 print('test.txt (calculation result)')
@@ -103,7 +104,7 @@ with open(os.path.join(last_exp_log,'test.txt')) as f:
 print('---------------')
 
 
-# In[9]:
+# In[ ]:
 
 
 print('timestamp')
@@ -114,7 +115,7 @@ with open(os.path.join(last_exp_log,'timestamp')) as f:
 print('---------------')
 
 
-# In[10]:
+# In[ ]:
 
 
 print('requirements.txt')

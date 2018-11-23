@@ -21,13 +21,14 @@ from IPython import get_ipython
 
 class Note():
     def __init__(self, 
-                 log_dir, 
+                 log_dir=None,
+                 use_subdir=True,
                  script_name=None,
                  safe_mode=True,
                  remove_write_permission=True,
                  log_format='html',
                 ):
-        self.dir = utils.trim_slash(log_dir)
+
         self.safe_mode = safe_mode
         
         # Constant Values
@@ -40,6 +41,21 @@ class Note():
         self.imported_files = []
         self.set_timestamp()
         self.log_format = log_format
+
+        # default log_dir = LABNOTE_LOGDIR_DEFAULT or labnote_log
+        log_dir_defaults = ['./labnote_log']
+        if 'LABNOTE_LOGDIR_DEFAULT' in os.environ.keys():
+            log_dir_defaults.append(os.environ['LABNOTE_LOGDIR_DEFAULT'])
+        if log_dir is None or log_dir in log_dir_defaults:
+            if not use_subdir:
+                warn('The setting "use_subdir=False" is ignored. You must direct log_dir or set use_subdir=True')
+                self.use_subdir=True
+            log_dir = log_dir_defaults[-1]
+        else:
+            # adopt user setting only when log_dir is directed.
+            self.use_subdir = use_subdir
+            
+        self.dir = utils.trim_slash(log_dir)
         
     
         if utils.is_executed_on_ipython():
@@ -84,13 +100,16 @@ class Note():
     
     
     @property
-    def dirname(self):        
+    def dirname(self):
+        if not self.use_subdir:
+            return self.dir
+        
+        # generate subdir name.
         base_name,_ = os.path.splitext(self.script_name)
         if self.reproduction:
             return self.dir
-        else:
-            return os.path.join(self.dir,"%s-%s"%(base_name,self.timestamp))
-    
+        return os.path.join(self.dir,base_name,self.timestamp)
+        
     def makedirs(self):
         dirname = self.dirname
         if not os.path.exists(dirname):
@@ -248,7 +267,7 @@ class Note():
         self._safe_file_overwrite(file)        
         with open(file,'wb') as f:
             f.write(memo.encode('utf-8'))
-            f.write("\n")
+            f.write("\n".encode('utf-8'))
         utils.remove_write_permissions(file)
         
     def _load_me(self):
