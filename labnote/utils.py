@@ -8,12 +8,16 @@ import warnings
 import stat
 
 def is_executed_on_ipython():
-    try:
-        if "ipykernel_launcher.py" in sys.argv[0]:
-            return True
+    """Determine wheather is the environment Jupyter Notebook"""
+    if 'get_ipython' not in globals():
+        # Python shell
         return False
-    except:
-        return False
+    env_name = get_ipython().__class__.__name__
+    if env_name == 'TerminalInteractiveShell':
+        # IPython shell
+        return True
+    # Jupyter Notebook
+    return True
 
 def case_ignore_in(test, L):
     test = test.lower()

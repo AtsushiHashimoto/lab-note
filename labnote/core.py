@@ -248,6 +248,7 @@ class Note():
         self._safe_file_overwrite(file)        
         with open(file,'wb') as f:
             f.write(memo.encode('utf-8'))
+            f.write("\n")
         utils.remove_write_permissions(file)
         
     def _load_me(self):
