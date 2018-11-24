@@ -102,7 +102,6 @@ class Note():
     def dirname(self):
         if not self.use_subdir:
             return self.dir
-        print('dirname:', self.use_subdir)
         # generate subdir name.
         base_name,_ = os.path.splitext(self.script_name)
         if self.reproduction:
@@ -192,7 +191,6 @@ class Note():
             cpath = os.path.commonpath([self.current_dir,mdir])
             if len(cpath) != len(self.current_dir):
                 continue
-            print(mdir, cpath)
             modules.append(mdir[mdir.find(cpath):])
 
         # generate requirements.txt
@@ -222,16 +220,12 @@ class Note():
 
     def _copy_main_script(self):
         dirname = self.makedirs()
-        print('hoge',dirname)
         src = os.path.join(self.current_dir,self.script_name)
         if not os.path.exists(src):
             warn("Please set a correct script name manually!")
             warn("ex) note.script_name = xxx.ipynb")
         else:
-            print('huga',dirname,'/',self.script_name)
             dist = os.path.join(dirname,self.script_name)
-            print(src)
-            print(dist)
             shutil.copy2(src,dist)
             utils.remove_write_permissions(dist)
         _,ext = os.path.splitext(self.script_name)
