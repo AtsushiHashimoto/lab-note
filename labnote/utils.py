@@ -92,7 +92,8 @@ def get_notebook_name():
             for nn in json.loads(response.text):
                 if nn['kernel']['id'] == kernel_id:
                     relative_path = nn['notebook']['path']
-                    return os.path.join(ss['notebook_dir'], relative_path)
+                    return os.path.basename(relative_path)
+                    #return os.path.join(ss['notebook_dir'], relative_path)
         warnings.warn('Unexpected Error: no kernel corresponds to this call was found.')
         return None
     except:

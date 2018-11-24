@@ -71,7 +71,6 @@ class Note():
                     warn("NOTE: This warning may happen if you are using jupyter in a docker, and access via port-forwarding. Using jupyter with password authentification can be another possibility.")
                     if self.safe_mode:
                         raise RuntimeError("Failed to get script_name automatically.")
-            
         else:
             self.script_name = inspect.currentframe().f_back.f_code.co_filename
             
@@ -80,7 +79,7 @@ class Note():
         self.wrapup_done = False
         if self._check_reproduction(os.getcwd()):
             # requirementsのdiffを表示させたい(改善点3)
-            
+
             self._load_me()
             self.reproduction = True
             # change current directory to log_dir.
@@ -103,7 +102,7 @@ class Note():
     def dirname(self):
         if not self.use_subdir:
             return self.dir
-        
+        print('dirname:', self.use_subdir)
         # generate subdir name.
         base_name,_ = os.path.splitext(self.script_name)
         if self.reproduction:
@@ -182,6 +181,7 @@ class Note():
     def _copy_modules(self):
         dirname = self.makedirs()
         modules = []
+        
         for k,v in sys.modules.items():
             if not hasattr(v,'__file__'):        
                 continue
@@ -190,8 +190,9 @@ class Note():
             if mdir == self.script_name:
                 continue            
             cpath = os.path.commonpath([self.current_dir,mdir])
-            if cpath == os.sep: # os.sep = '\' in ubuntu/mac and '/' in windows.
+            if len(cpath) != len(self.current_dir):
                 continue
+            print(mdir, cpath)
             modules.append(mdir[mdir.find(cpath):])
 
         # generate requirements.txt
@@ -205,7 +206,7 @@ class Note():
             return
         #print(dirname)
         cd_len = len(self.current_dir)
-        for mdir in modules:
+        for mdir in modules:            
             if len(mdir)<=cd_len+1:
                 dist = dirname
             else:
@@ -221,12 +222,16 @@ class Note():
 
     def _copy_main_script(self):
         dirname = self.makedirs()
+        print('hoge',dirname)
         src = os.path.join(self.current_dir,self.script_name)
         if not os.path.exists(src):
             warn("Please set a correct script name manually!")
             warn("ex) note.script_name = xxx.ipynb")
         else:
+            print('huga',dirname,'/',self.script_name)
             dist = os.path.join(dirname,self.script_name)
+            print(src)
+            print(dist)
             shutil.copy2(src,dist)
             utils.remove_write_permissions(dist)
         _,ext = os.path.splitext(self.script_name)

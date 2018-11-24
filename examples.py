@@ -63,7 +63,7 @@ note.save("Memo: this is a perfect experimental setting!")
 # # save experimental results safely (in two ways)
 # 'note.record()' makes result directory with timestamp.
 
-# In[ ]:
+# In[6]:
 
 
 import os.path
@@ -93,7 +93,7 @@ rec = note.record()
 
 # # show records
 
-# In[ ]:
+# In[7]:
 
 
 print('test.txt (calculation result)')
@@ -104,7 +104,7 @@ with open(os.path.join(last_exp_log,'test.txt')) as f:
 print('---------------')
 
 
-# In[ ]:
+# In[8]:
 
 
 print('timestamp')
@@ -115,7 +115,7 @@ with open(os.path.join(last_exp_log,'timestamp')) as f:
 print('---------------')
 
 
-# In[ ]:
+# In[9]:
 
 
 print('requirements.txt')
