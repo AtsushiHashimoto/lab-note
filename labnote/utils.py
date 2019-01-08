@@ -7,6 +7,8 @@ import requests
 import warnings
 import stat
 
+import errno
+
 def is_executed_on_ipython():
     try:
         if "ipykernel" in sys.argv[0]:
@@ -14,6 +16,28 @@ def is_executed_on_ipython():
         return False
     except:
         return False
+
+class import_from_backup():
+    def __init__(self,backup_dir,link_name):
+        self.backup_dir = backup_dir
+        self.link_name = link_name
+    
+    def __enter__(self):
+        symlink_force(self.backup_dir,self.link_name)
+        return self
+
+    def __exit__(self, ex_type, ex_value, trace):
+        os.remove(self.link_name)
+
+def symlink_force(target, link_name):
+    try:
+        os.symlink(target, link_name)
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            os.remove(link_name)
+            os.symlink(target, link_name)
+        else:
+            raise e
 
 def case_ignore_in(test, L):
     test = test.lower()
