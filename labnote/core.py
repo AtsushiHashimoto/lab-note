@@ -5,6 +5,7 @@ import pickle
 import os
 import sys
 import labnote.utils as utils
+from labnote.argparse import ArgumentParser as AP
 from warnings import warn
 from datetime import datetime as dt
 import shutil
@@ -22,14 +23,24 @@ from IPython import get_ipython
 class Note():
     def __init__(self, 
                  log_dir=None,
-                 use_subdir=True,
+                 description=None,
+                 use_subdir=False,
                  script_name=None,
-                 safe_mode=True,
-                 remove_write_permission=True,
                  log_format='html',
+                 arguments=None,
                 ):
 
-        self.safe_mode = safe_mode
+        self.description = description
+        
+        arguments = utils.to_list(arguments)
+        self.params = edict()
+        for arg in arguments:
+            self.update_params(arg)
+        # alias of params
+        self.args = self.params
+        
+        if self.params.output is not None:
+            log_dir = self.params.output
         
         # Constant Values
         self.ParamFileBaseName = 'params.yml'
@@ -37,26 +48,16 @@ class Note():
         self.PickleFileBaseName = 'note.pickle'
         self.DateTimeFormat = "%Y%m%d-%H.%M.%S"
 
-        self.params = edict()
         self.imported_files = []
         self.set_timestamp()
         self.log_format = log_format
 
-        # default log_dir = LABNOTE_LOGDIR_DEFAULT or labnote_log
-        log_dir_defaults = ['./labnote_log']
-        if 'LABNOTE_LOGDIR_DEFAULT' in os.environ.keys():
-            log_dir_defaults.append(os.environ['LABNOTE_LOGDIR_DEFAULT'])
-        if log_dir is None or log_dir in log_dir_defaults:
-            if not use_subdir:
-                warn('The setting "use_subdir=False" is ignored. You must direct log_dir or set use_subdir=True')
-                self.use_subdir=True
-            log_dir = log_dir_defaults[-1]
-        else:
-            # adopt user setting only when log_dir is directed.
-            self.use_subdir = use_subdir
+        if log_dir is None:
+            log_dir = 'output'
+            warn('output directory has not been set. We use "./output" for distination.')
             
-        self.dir = utils.trim_slash(log_dir)
-        
+        self.use_subdir = use_subdir
+        self.dir = utils.trim_slash(log_dir)        
     
         if utils.is_executed_on_ipython():
             self.script_name = utils.get_notebook_name()
@@ -69,8 +70,7 @@ class Note():
                     warn("Please set your script file name to 'script_name'.")
                     warn("ex) note.script_name = xxx.ipynb")
                     warn("NOTE: This warning may happen if you are using jupyter in a docker, and access via port-forwarding. Using jupyter with password authentification can be another possibility.")
-                    if self.safe_mode:
-                        raise RuntimeError("Failed to get script_name automatically.")
+                    self.script_name = 'main'
         else:
             self.script_name = inspect.currentframe().f_back.f_code.co_filename
             
@@ -97,7 +97,43 @@ class Note():
             return True
         return False
     
-    
+    def update_params(self,arg,level=0):
+        if isinstance(arg,dict):
+            pass
+        elif isinstance(arg,str):
+            if level==0:
+                parser = self.create_argparse_from_yaml(arg)            
+                arg = parser.parse_args()
+            else:
+                with open(arg,'r') as f:
+                    arg = yaml.load(f)
+        for k,v in arg.items():
+            self.params[k]=v
+            
+        # update by config file after update arg.
+        # this is to maintain priority of the settings (use config file when values for a key is duplicated).
+        if 'config' in arg.keys():
+            configs = utils.to_list(arg['config'])
+            [self.update_params(conf,level=level+1) for conf in configs]
+            
+    def create_argparse_from_yaml(self,path):
+        with open(path,'r') as f:
+            actions = yaml.load(f)
+        parser = AP()
+        for var_name,act in actions.items():
+            name = ['--%s'%var_name]
+            if 'name' in act.keys():
+                name += utils.to_list(act['name'])
+                act.pop('name')
+            _type = None
+            if '_type' in act.keys():
+                _type = act['_type']
+                act.pop('_type')
+            if 'type' in act.keys():
+                _type = act['type']
+                act.pop('type')
+            parser.add_argument(*name,type=_type,**act) 
+        return parser
     @property
     def dirname(self):
         if not self.use_subdir:
@@ -127,11 +163,8 @@ class Note():
     def _safe_file_overwrite(self, path):
         if os.path.isfile(path):
             warn("File is already exist: '%s'"%path)
-            if self.safe_mode:
-                raise RuntimeError("Stop the program. If you need to overwrite the above file, set safe_mode=False.")
-            else:
-                warn("The above file will be overwritten. If prevent such an overwrite, set safe_mode=True")
-
+            warn("The above file will be overwritten.")
+            
     def set_params(self, params):
         if self.reproduction:
             warn("Caution: change parameters after using them may cause false reproduction results. Please be sure to call Note.set_params before starting experiment.")
@@ -140,8 +173,6 @@ class Note():
         for k,v in params.items():
             if k in old_keys and self.params[k] is not None:
                 warn("%s is going to be overwritten."%k)
-                if self.safe_mode:
-                    raise RuntimeError("Stop the program. If you need to overwrite the above param, set safe_mode=False.")
                 warn("Overwrite %s: %s -> %s"%(k,self.params[k],params[k]))
             self.params[k] = v
             
@@ -161,8 +192,10 @@ class Note():
         raise NotImplementedError("実装待ち．カレントパスが優先されるなら，保存したmain scriptから実行するなら不要か？")
         pass
 
-    def record(self,sub_dir=None):
-        return NoteDir(self,sub_dir)
+    def record(self,sub_dir=None,timestamped_dir=None):
+        if timestamped_dir is None:
+            timestamped_dir = self.use_subdir
+        return NoteDir(self,sub_dir,timestamped_dir=timestamped_dir)
     
 
     
@@ -213,7 +246,6 @@ class Note():
             if not os.path.exists(dist_dir):
                 os.makedirs(dist_dir)
             shutil.copy2(mdir,dist)
-            utils.remove_write_permissions(dist)
             
         basename,_ = os.path.splitext(self.script_name)
            
@@ -227,7 +259,6 @@ class Note():
         else:
             dist = os.path.join(dirname,self.script_name)
             shutil.copy2(src,dist)
-            utils.remove_write_permissions(dist)
         _,ext = os.path.splitext(self.script_name)
 
         if not utils.is_executed_on_ipython():
@@ -258,16 +289,18 @@ class Note():
             else:
                 warn("unknown extension '%s'"%ext_name)
                 warn("labnote.Note supports only 'yml/yaml', 'json', and 'pickle/pkl'")
-        utils.remove_write_permissions(file)
        
     def _save_memo(self,memo,base_name):
         dirname = self.makedirs()
         file = os.path.join(dirname,base_name)
         self._safe_file_overwrite(file)        
         with open(file,'wb') as f:
+            if self.description is not None:
+                f.write(self.description.encode('utf-8'))
+                f.write("\n".encode('utf-8'))
+                
             f.write(memo.encode('utf-8'))
             f.write("\n".encode('utf-8'))
-        utils.remove_write_permissions(file)
         
     def _load_me(self):
         file = os.path.join(self.current_dir,self.PickleFileBaseName)
@@ -289,7 +322,6 @@ class Note():
         self._safe_file_overwrite(file)     
         ipython = get_ipython()
         ipython.system("jupyter nbconvert --to %s --output %s %s"%(to,file,self.script_name))
-        utils.remove_write_permissions(file)
         self.wrapup_done = True
 
         
@@ -300,7 +332,6 @@ class Note():
         self._safe_file_overwrite(file)        
         with open(file, 'wb') as f:
             pickle.dump(self.__dict__, f, 2)
-        utils.remove_write_permissions(file)
         
     def _load_param(self,file):
         if not os.path.isfile(file):
@@ -318,15 +349,16 @@ class Note():
             else:
                 warn("unknown extension '%s'"%ext_name)
                 warn("labnote.Note supports only 'yml/yaml', 'json', and 'pickle/pkl'")
-                if self.safe_mode:
-                    raise RuntimeError('failed to load params')
         self.set_params(new)
     
 class NoteDir():
-    def __init__(self,note,sub_dir=None):
+    def __init__(self,note,sub_dir=None,timestamped_dir=False):
         self.DateTimeFormat = "%Y%m%d-%H.%M.%S.%f"
         self.note=note
-        self.dirname = os.path.join(note.dirname,'results',dt.now().strftime(self.DateTimeFormat))
+        if timestamped_dir:
+            self.dirname = os.path.join(note.dirname,'results',dt.now().strftime(self.DateTimeFormat))
+        else:
+            self.dirname = os.path.join(note.dirname,'results')           
         if sub_dir:
             self.dirname = os.path.join(self.dirname,sub_dir)
             
@@ -351,9 +383,7 @@ class NoteDir():
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         else:
-            warn('%s is already exists. Files in the directory should not be overwritten!!'%dirname)
-            if self.note.safe_mode:
-                raise RuntimeError('result recording directory was unexpectedly opened twice.')
+            warn('%s is already exists. Files in the directory will be overwritten.'%dirname)
         self.opened_dirname = dirname
         self.timestamp('Start record')
         return self
@@ -382,11 +412,6 @@ class NoteDir():
                 continue
             if os.path.basename(file)=='timestamp':
                 continue
-            utils.remove_write_permissions(file)
             exist_file=True
-        if not exist_file:
-            warn("No file is produced. Remove the directory.")
-            os.rmdir(self.opened_dirname)
-        else:
-            self.timestamp('End record')
+        self.timestamp('End record')
         self.opened_dirname = None

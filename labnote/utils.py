@@ -82,7 +82,24 @@ def find_all_files(directory):
         yield root
         for file in files:
             yield os.path.join(root, file)
-
+            
+def to_list(entry):
+    if entry is None:
+        return []
+    if isinstance(entry,list):
+        return entry
+    return [entry]
+            
+def register_arg4yaml(default,name=None,_type=None,**kwargs):
+    if name:
+        kwargs['name']:name
+    if _type is None:
+        _type = type(default)          
+    kwargs['type'] = _type
+    
+    kwargs['default'] = default
+    return kwargs
+    
 
 # from https://github.com/jupyter/notebook/issues/1000
 #try:  # Python 3

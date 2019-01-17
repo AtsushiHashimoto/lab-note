@@ -30,6 +30,7 @@ class ArgumentParser(ap.ArgumentParser):
                                 argument_default=argument_default,
                                 conflict_handler=conflict_handler,
                                 add_help=add_help,allow_abbrev=allow_abbrev)
+        
         self.required = set()
 
 
@@ -40,8 +41,24 @@ class ArgumentParser(ap.ArgumentParser):
             self.required.add(store_action.dest)            
         return store_action  
 
+    def is_registered(self,option_string):        
+        for act in self._actions:
+            if option_string in act.option_strings:
+                return True
+        return False
 
     def parse_args(self,args=None,namespace=None):
+        if not self.is_registered('--config'):
+            if self.is_registered('-c'):
+                self.add_argument('--config',nargs='+',default=None,help='load a yaml config file.')
+            else:
+                self.add_argument('--config','-c',nargs='+',default=None,help='load a yaml config file.')
+        if not self.is_registered('--output'):
+            if self.is_registered('-o'):
+                self.add_argument('--output',nargs=1,default=None,help='set the output directory.')
+            else:
+                self.add_argument('--output','-o',nargs=1,default=None,help='load a yaml config file.')
+
         if utils.is_executed_on_ipython():
             # 引数をtempに退避
             temp = sys.argv

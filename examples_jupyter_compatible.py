@@ -46,24 +46,36 @@ if lb.utils.is_executed_on_ipython():
 
 
 note = lb.Note('./exp_log',
-               safe_mode=False, # set False during debugging.
-               script_name=script_name)
-params = parser.parse_args(args)
-note.set_params(params)
+               script_name=script_name,
+               arguments=parser.parse_args(args))
+
+
+# In[5]:
+
+
+'''
+from easydict import EasyDict as edict
+x = {'a':1}
+x.update({'b':2})
+print(x)
+
+x.pop('b')
+print(x)
+'''
 
 
 # # save parameters before starting your experiment.
 
-# In[5]:
+# In[6]:
 
 
 note.save("Memo: this is a perfect experimental setting!")
 
 
-# # save experimental results safely (in two ways)
+# # save experimental results (in two ways)
 # 'note.record()' makes result directory with timestamp.
 
-# In[6]:
+# In[7]:
 
 
 import os.path
@@ -93,7 +105,7 @@ rec = note.record()
 
 # # show records
 
-# In[7]:
+# In[8]:
 
 
 print('test.txt (calculation result)')
@@ -104,7 +116,7 @@ with open(os.path.join(last_exp_log,'test.txt')) as f:
 print('---------------')
 
 
-# In[8]:
+# In[9]:
 
 
 print('timestamp')
@@ -115,7 +127,7 @@ with open(os.path.join(last_exp_log,'timestamp')) as f:
 print('---------------')
 
 
-# In[9]:
+# In[10]:
 
 
 print('requirements.txt')
@@ -129,9 +141,9 @@ print('---------------')
 # # close session
 # exit() calls note destructor, which save the jupyter log as an .html file in the `exp_log' directory.
 
-# In[10]:
+# In[11]:
 
 
-#note.wrapup()
-#exit()
+note.wrapup()
+exit()
 
