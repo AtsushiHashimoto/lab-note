@@ -119,31 +119,31 @@ ArgumentParser is a python/jupyter compatible argument parser.</p>
 The interfaces of all functions are the same with argparse.ArgumentParser.</p>
 <h1 id="example-convert-your-argmentparser-jupyter-compatible">Example: convert your ArgmentParser jupyter-compatible.</h1>
 <p>You need only commenting out built-in argparse, and import labnote.Argumentparser.</p>
-<div class="codehilite" style="background: #272822"><pre style="line-height: 125%"><span></span>    <span style="color: #75715e">#from argparse import ArgumentParser # &lt;- comment out!</span>
-    <span style="color: #f92672">from</span> <span style="color: #f8f8f2">lab</span><span style="color: #f92672">-</span><span style="color: #f8f8f2">note</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">ArgumentParser</span> <span style="color: #75715e"># &lt;- add this line!</span>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>    <span style="color: #408080; font-style: italic">#from argparse import ArgumentParser # &lt;- comment out!</span>
+    <span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">lab</span><span style="color: #666666">-</span>note <span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">ArgumentParser</span> <span style="color: #408080; font-style: italic"># &lt;- add this line!</span>
 
-    <span style="color: #f8f8f2">parser</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">ArgumentParser</span>
-    <span style="color: #f8f8f2">parser</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">add_argument(</span><span style="color: #e6db74">&#39;path_root_src&#39;</span><span style="color: #f8f8f2">,</span> \
-        <span style="color: #f8f8f2">action</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#39;store&#39;</span><span style="color: #f8f8f2">,</span> \
-        <span style="color: #f8f8f2">nargs</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None,</span> \
-        <span style="color: #f8f8f2">const</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None,</span> \
-        <span style="color: #f8f8f2">default</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None,</span> \
-        <span style="color: #f8f8f2">type</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">str,</span> \
-        <span style="color: #f8f8f2">choices</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None,</span> \
-        <span style="color: #f8f8f2">help</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#39;Directory path where your taken photo files are located.&#39;</span><span style="color: #f8f8f2">,</span> \
-        <span style="color: #f8f8f2">metavar</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None)</span>
-    <span style="color: #f8f8f2">parser</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">add_argument(</span><span style="color: #e6db74">&#39;--param1&#39;</span><span style="color: #f8f8f2">,</span> \
-        <span style="color: #f8f8f2">action</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#39;store&#39;</span><span style="color: #f8f8f2">,</span> \
-        <span style="color: #f8f8f2">nargs</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None,</span> \
-        <span style="color: #f8f8f2">const</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None,</span> \
-        <span style="color: #f8f8f2">default</span><span style="color: #f92672">=</span><span style="color: #ae81ff">1.0</span><span style="color: #f8f8f2">,</span> \
-        <span style="color: #f8f8f2">type</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">float,</span> \
-        <span style="color: #f8f8f2">choices</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None,</span> \
-        <span style="color: #f8f8f2">help</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#39;A optional parameter.&#39;</span><span style="color: #f8f8f2">,</span> \
-        <span style="color: #f8f8f2">metavar</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">None)</span>
+    parser <span style="color: #666666">=</span> ArgumentParser
+    parser<span style="color: #666666">.</span>add_argument(<span style="color: #BA2121">&#39;path_root_src&#39;</span>, \
+        action<span style="color: #666666">=</span><span style="color: #BA2121">&#39;store&#39;</span>, \
+        nargs<span style="color: #666666">=</span><span style="color: #008000">None</span>, \
+        const<span style="color: #666666">=</span><span style="color: #008000">None</span>, \
+        default<span style="color: #666666">=</span><span style="color: #008000">None</span>, \
+        <span style="color: #008000">type</span><span style="color: #666666">=</span><span style="color: #008000">str</span>, \
+        choices<span style="color: #666666">=</span><span style="color: #008000">None</span>, \
+        help<span style="color: #666666">=</span><span style="color: #BA2121">&#39;Directory path where your taken photo files are located.&#39;</span>, \
+        metavar<span style="color: #666666">=</span><span style="color: #008000">None</span>)
+    parser<span style="color: #666666">.</span>add_argument(<span style="color: #BA2121">&#39;--param1&#39;</span>, \
+        action<span style="color: #666666">=</span><span style="color: #BA2121">&#39;store&#39;</span>, \
+        nargs<span style="color: #666666">=</span><span style="color: #008000">None</span>, \
+        const<span style="color: #666666">=</span><span style="color: #008000">None</span>, \
+        default<span style="color: #666666">=1.0</span>, \
+        <span style="color: #008000">type</span><span style="color: #666666">=</span><span style="color: #008000">float</span>, \
+        choices<span style="color: #666666">=</span><span style="color: #008000">None</span>, \
+        help<span style="color: #666666">=</span><span style="color: #BA2121">&#39;A optional parameter.&#39;</span>, \
+        metavar<span style="color: #666666">=</span><span style="color: #008000">None</span>)
 
-    <span style="color: #f8f8f2">params</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">parser</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">parse_args()</span>
-    <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(params)</span>
+    params <span style="color: #666666">=</span> parser<span style="color: #666666">.</span>parse_args()
+    <span style="color: #008000; font-weight: bold">print</span>(params)
 </pre></div>
               
             </div>

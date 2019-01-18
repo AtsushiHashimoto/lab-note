@@ -62,9 +62,11 @@
     
         <ul>
         
-            <li><a class="toctree-l3" href="#noteset_paramsdict">Note.set_params(dict)</a></li>
+            <li><a class="toctree-l3" href="#note">Note()</a></li>
         
-            <li><a class="toctree-l3" href="#notesave">Note.save()</a></li>
+            <li><a class="toctree-l3" href="#noteparams">Note.params</a></li>
+        
+            <li><a class="toctree-l3" href="#notesavememostr">Note.save([memo=str])</a></li>
         
             <li><a class="toctree-l3" href="#noterecord">Note.record()</a></li>
         
@@ -112,17 +114,70 @@
             <div class="section">
               
                 <h1 id="class-note">class Note</h1>
-<p>[<a href="https://github.com/AtsushiHashimoto/lab-note/blob/c8c1a1fc4df8ac0e5cbccf4e1aa2a93c8099d6f2/labnote/core.py#L19">code</a>]</div>
-Note records your experimental parameters, results, and note into a timestamped directly safely.
-<div style="text-align: right"></p>
-<h2 id="noteset_paramsdict">Note.set_params(dict)</h2>
-<p>set parameters related to your experiments.</p>
-<h2 id="notesave">Note.save()</h2>
+<p><div style="text-align: right">
+[<a href="https://github.com/AtsushiHashimoto/lab-note/blob/c8c1a1fc4df8ac0e5cbccf4e1aa2a93c8099d6f2/labnote/core.py#L19">code</a>]</div>
+Note records your experimental parameters, results, and note into a timestamped directly safely.</p>
+<h2 id="note">Note()</h2>
+<p>Initialize Note class instance.</p>
+<ul>
+<li>
+<p>arguments: log_dir, arguments, description, use_subdir, script_name</p>
+<p>note = Note(log_dir='./outputs',arguments='default_arguments.yaml')</p>
+</li>
+</ul>
+<h3 id="log_dir">log_dir</h3>
+<p>Direct a directory in which all things are archived.</p>
+<h3 id="arguments-optional">arguments (optional)</h3>
+<p>Direct yaml file in which information for argument parser is written.
+In that, keys are valuable name, and values are arguments passed to parser.add_argument function.
+This is compatible with jupyter-notebook.</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>N<span style="color: #666666">:</span>
+  <span style="color: #008000; font-weight: bold">default</span><span style="color: #666666">:</span> <span style="color: #666666">100</span>
+  type<span style="color: #666666">:</span> int
+  help<span style="color: #666666">:</span> <span style="color: #BA2121">&#39;# of samples&#39;</span>
+alpha<span style="color: #666666">:</span>
+  name<span style="color: #666666">:</span> <span style="color: #666666">-</span>a
+  <span style="color: #008000; font-weight: bold">default</span><span style="color: #666666">:</span> <span style="color: #666666">1.0</span>
+  type<span style="color: #666666">:</span> float
+  help<span style="color: #666666">:</span> std<span style="color: #666666">.</span> dev<span style="color: #666666">.</span> of the first normal distribution
+beta<span style="color: #666666">:</span>
+  name<span style="color: #666666">:</span> <span style="color: #666666">-</span>b
+  <span style="color: #008000; font-weight: bold">default</span><span style="color: #666666">:</span> <span style="color: #666666">1.0</span>
+  type<span style="color: #666666">:</span> float
+  help<span style="color: #666666">:</span> std<span style="color: #666666">.</span> dev<span style="color: #666666">.</span> of the second normal distribution
+</pre></div>
+
+
+<h3 id="description-default-none">description (default: None)</h3>
+<p>Comments that explains your code. This will appear in --help usage and memo.txt file in archive.</p>
+<h3 id="use_subdir-default-false">use_subdir (default: False)</h3>
+<p>If use_subdir=True, every execution create archive subdirectory with timestamp.</p>
+<h3 id="script_name-default-none">script_name (default: None)</h3>
+<p>You can change archived main script filename.</p>
+<h2 id="noteparams">Note.params</h2>
+<p>Access to configures attribute parameters.
+Let assume the following config file ('argument_settings.yaml') exists.</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>foo<span style="color: #666666">:</span> <span style="color: #666666">123</span>
+</pre></div>
+
+
+<p>You can access the value of 'foo' by...</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>&gt;&gt;&gt; note = labnote.Note(arguments=&#39;argument_settings.yaml&#39;)
+&gt;&gt;&gt; print(note.params.foo)
+123
+</pre></div>
+
+
+<h2 id="notesavememostr">Note.save([memo=str])</h2>
 <p>save the main script, your original modules, and all parameters to a timestamped directly.
 The timestamp is generated in the constructor.</p>
 <h2 id="noterecord">Note.record()</h2>
 <p>generate a timestamped directory, which is used to store all experimental results at a trial.
 The timestamp is generated in this function call.</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>with note.record() as rec:
+  with open(rec.getpath(&#39;results.txt&#39;)) as f:
+    f.write(&lt;&lt;your_precious_result&gt;&gt;)
+</pre></div>
               
             </div>
           </div>

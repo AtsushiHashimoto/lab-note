@@ -122,26 +122,33 @@
             <div class="section">
               
                 <h2 id="accellarate-your-python-experiments-with-lab-note">Accellarate your python experiments with Lab-Note!</h2>
-<p>Lab-Note is a toolkit for experiments written in python language. It was developped to make your experimental trials recodable and reproducible.</p>
+<p>Lab-Note is a toolkit for experiments written in python language. It was developed to make your experimental trials recordable, reproducible, and configurable.</p>
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="install">Install</h3>
-<p>%pip install git+https://github.com/AtsushiHashimoto/lab-note.git</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">% pip install git+https://github.com/AtsushiHashimoto/lab-note.git</span>
+</pre></div>
+
+
 <h3 id="how-to-use">How to use?</h3>
 <ul>
-<li><a href="https://github.com/AtsushiHashimoto/lab-note/blob/master/examples.ipynb">sample code</a></li>
+<li><a href="https://github.com/AtsushiHashimoto/lab-note/blob/master/examples_exp.ipynb">sample code</a></li>
 </ul>
 <h2 id="archive">Archive</h2>
-<p>This toolkit archive experiment in a timestamped directory, which consists of...</p>
+<p>This toolkit archive experiments in a directory with its configuration.
+The archive consists of...</p>
 <ul>
 <li>params.yaml (all parameters of the experiment)</li>
-<li>&lt;&lt; script_name&gt;&gt; (main script of the experiment)</li>
-<li>&lt;&lt; modules &gt;&gt; (all imported modules under the main script's directory.)</li>
-<li>results (all experimental results)</li>
-<li>memo.txt (optional. A message hard-coded in the experiment.)</li>
-<li>note.pickle (pickled parameters to reproduce the experiments.)</li>
+<li>&lt;&lt;script_name&gt;&gt; (main script of the experiment)</li>
+<li>&lt;&lt;modules&gt;&gt; (all imported modules under the main script's directory.)</li>
+<li>&lt;&lt;results&gt;&gt; (all experimental results)</li>
+<li>memo.txt (optional)</li>
 </ul>
 <h2 id="reproduce-the-experiment">Reproduce the experiment.</h2>
-<p>move to the archive directory, then run the main script.</p>
+<p>move to the archive directory, and type...</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">% python &lt;&lt;script_name&gt;&gt;</span>
+</pre></div>
+
+
 <h2 id="supported-environment">Supported Environment</h2>
 <p>Lab note is currently tested on:</p>
 <ul>
@@ -196,5 +203,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2018-10-24 10:31:09
+Build Date UTC : 2019-01-18 07:19:08
 -->
