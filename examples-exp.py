@@ -16,7 +16,7 @@ import labnote as lb
 # # 2. load yaml for argument setting
 # The following code is just to produce yaml in code. You can prepare it manually.
 
-# In[9]:
+# In[2]:
 
 
 import yaml
@@ -30,9 +30,25 @@ default_args = {
     'N':reg(100,'-N',int,help='# of samples'),    
 }
 default_args_yaml = './example_default_args.yml'
-with open(default_args_yaml,'w') as f:
-    f.write(yaml.dump(default_args, default_flow_style=False))
 
+#with open(default_args_yaml,'w') as f:
+#    f.write(yaml.dump(default_args, default_flow_style=False))
+
+
+# ### example_default_args.yml
+# 
+#     N:
+#       default: 100
+#       help: '# of samples'
+#       type: int
+#     alpha:
+#       default: 1.0
+#       help: std. dev. of the first normal distribution
+#       type: float
+#     beta:
+#       default: 1.0
+#       help: std. dev. of the second normal distribution
+#       type: float
 
 # # 3. Feed yaml from command line
 # The following code is just to produce config file in code. You can prepare it manually.
@@ -53,7 +69,7 @@ with open(config_yaml,'w') as f:
 
 # # 4. Create a note.
 
-# In[10]:
+# In[4]:
 
 
 note = lb.Note('./log',arguments=[default_args_yaml,{'foo':1}])
@@ -63,7 +79,7 @@ print(note.params)
 # # 5. Save experimental results (in two ways)
 # 'note.record()' makes result directory with timestamp.
 
-# In[ ]:
+# In[5]:
 
 
 import os.path
@@ -94,7 +110,7 @@ rec = note.record()
 # # 6. close session
 # exit() calls note destructor, which save the jupyter log as an .html file in the `exp_log' directory.
 
-# In[ ]:
+# In[6]:
 
 
 note.wrapup()

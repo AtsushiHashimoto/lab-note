@@ -9,6 +9,11 @@ import stat
 
 import errno
 
+def get_type(_type):
+    if isinstance(_type,str):
+        return eval(_type)
+    return _type
+
 def is_executed_on_ipython():
     try:
         if "ipykernel" in sys.argv[0]:

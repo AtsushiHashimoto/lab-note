@@ -120,6 +120,7 @@ class Note():
         with open(path,'r') as f:
             actions = yaml.load(f)
         parser = AP()
+        
         for var_name,act in actions.items():
             name = ['--%s'%var_name]
             if 'name' in act.keys():
@@ -127,10 +128,10 @@ class Note():
                 act.pop('name')
             _type = None
             if '_type' in act.keys():
-                _type = act['_type']
+                _type = utils.get_type(act['_type'])
                 act.pop('_type')
             if 'type' in act.keys():
-                _type = act['type']
+                _type = utils.get_type(act['type'])
                 act.pop('type')
             parser.add_argument(*name,type=_type,**act) 
         return parser
