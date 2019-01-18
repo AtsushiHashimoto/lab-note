@@ -100,7 +100,7 @@ def register_arg4yaml(default,name=None,_type=None,**kwargs):
         kwargs['name']:name
     if _type is None:
         _type = type(default)          
-    kwargs['type'] = _type
+    kwargs['type'] = _type.__name__
     
     kwargs['default'] = default
     return kwargs
