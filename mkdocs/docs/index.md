@@ -1,28 +1,30 @@
 ## Accellarate your python experiments with Lab-Note!
 
-Lab-Note is a toolkit for experiments written in python language. It was developped to make your experimental trials recodable and reproducible.
+Lab-Note is a toolkit for experiments written in python language. It was developed to make your experimental trials recordable, reproducible, and configurable.
 
 ## Quick Start
 
 ### Install
-  %pip install git+https://github.com/AtsushiHashimoto/lab-note.git
+    % pip install git+https://github.com/AtsushiHashimoto/lab-note.git
 
 ### How to use?
-  - [sample code](https://github.com/AtsushiHashimoto/lab-note/blob/master/examples.ipynb)
+  - [sample code](https://github.com/AtsushiHashimoto/lab-note/blob/master/examples_exp.ipynb)
 
 
 ## Archive
-This toolkit archive experiment in a timestamped directory, which consists of...
+This toolkit archive experiments in a directory with its configuration.
+The archive consists of...
 
  - params.yaml (all parameters of the experiment)
- - &lt;&lt; script_name&gt;&gt; (main script of the experiment)
- - &lt;&lt; modules &gt;&gt; (all imported modules under the main script's directory.)
- - results (all experimental results)
- - memo.txt (optional. A message hard-coded in the experiment.)
- - note.pickle (pickled parameters to reproduce the experiments.)
+ - &lt;&lt;script_name&gt;&gt; (main script of the experiment)
+ - &lt;&lt;modules&gt;&gt; (all imported modules under the main script's directory.)
+ - &lt;&lt;results&gt;&gt; (all experimental results)
+ - memo.txt (optional)
 
 ## Reproduce the experiment.
- move to the archive directory, then run the main script.
+ move to the archive directory, and type...
+
+    % python <<script_name>>
 
 ## Supported Environment
 Lab note is currently tested on:

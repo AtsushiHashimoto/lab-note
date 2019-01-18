@@ -7,7 +7,8 @@ markdown_extensions:
   - codehilite:
       use_pygments: true
       noclasses: true
-      pygments_style: monokai
+      pygments_style: default
+      #monokai
 
 nav:
   - 'Home': 'index.md'
