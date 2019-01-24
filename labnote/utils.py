@@ -8,7 +8,7 @@ import warnings
 import stat
 
 import errno
-
+    
 def get_type(_type):
     if isinstance(_type,str):
         return eval(_type)
@@ -94,17 +94,6 @@ def to_list(entry):
     if isinstance(entry,list):
         return entry
     return [entry]
-            
-def register_arg4yaml(default,name=None,_type=None,**kwargs):
-    if name:
-        kwargs['name']:name
-    if _type is None:
-        _type = type(default)          
-    kwargs['type'] = _type.__name__
-    
-    kwargs['default'] = default
-    return kwargs
-    
 
 # from https://github.com/jupyter/notebook/issues/1000
 #try:  # Python 3

@@ -8,7 +8,7 @@ Lab-Note is a toolkit for experiments written in python language. It was develop
     % pip install git+https://github.com/AtsushiHashimoto/lab-note.git
 
 ### How to use?
-  - [sample code](https://github.com/AtsushiHashimoto/lab-note/blob/master/examples_exp.ipynb)
+  - [sample code](https://github.com/AtsushiHashimoto/lab-note/blob/master/examples-exp.ipynb)
 
 
 ## Archive

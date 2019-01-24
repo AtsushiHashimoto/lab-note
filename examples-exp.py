@@ -24,9 +24,6 @@ import labnote as lb
 # In[2]:
 
 
-import yaml
-from labnote.utils import register_arg4yaml as reg
-
 default_args_yaml = './example_default_args.yml'
 # all options of add_argument function can be a key of each parameter entry.
 with open(default_args_yaml,'w') as f:

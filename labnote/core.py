@@ -12,6 +12,7 @@ import shutil
 import inspect
 import pip
 
+
 from subprocess import check_call
 
 from IPython import get_ipython
@@ -86,7 +87,7 @@ class Note():
             self.current_dir = os.getcwd()
             self.dir = self.current_dir
             self.wrapup_done = False
-
+            
     def __del__(self):
         self.wrapup(self.log_format)
         
@@ -95,7 +96,7 @@ class Note():
         if os.path.exists(file):
             warn("`note.pickle' file found in the current directory. Run in a reproduction mode.")
             return True
-        return False
+        return False    
     
     def update_params(self,arg,level=0):
         if isinstance(arg,dict):
@@ -107,6 +108,7 @@ class Note():
             else:
                 with open(arg,'r') as f:
                     arg = yaml.load(f)
+                   
         for k,v in arg.items():
             self.params[k]=v
             

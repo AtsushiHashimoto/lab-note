@@ -1,7 +1,7 @@
-# class Note
 <div style="text-align: right">
 [[code](https://github.com/AtsushiHashimoto/lab-note/blob/c8c1a1fc4df8ac0e5cbccf4e1aa2a93c8099d6f2/labnote/core.py#L19)]</div>
 Note records your experimental parameters, results, and note into a timestamped directly safely.
+# class Note
 
 ## Note()
 Initialize Note class instance.
