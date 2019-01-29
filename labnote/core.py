@@ -132,10 +132,18 @@ class Note():
             if '_type' in act.keys():
                 _type = utils.get_type(act['_type'])
                 act.pop('_type')
-            if 'type' in act.keys():
+            elif 'type' in act.keys():
                 _type = utils.get_type(act['type'])
                 act.pop('type')
+            elif 'default' in act.keys():
+                try:
+                    v = eval(act['default'])
+                    _type=type(v)
+                except:
+                    pass
+                    
             parser.add_argument(*name,type=_type,**act) 
+            
         return parser
     @property
     def dirname(self):
