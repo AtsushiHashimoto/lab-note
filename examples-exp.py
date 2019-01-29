@@ -12,6 +12,8 @@
 
 import labnote as lb
 
+from labnote.utils import is_executed_on_ipython as on_jupyter
+
 
 # # 2. load yaml for argument setting
 # The following configuration is equivalent to write...
@@ -26,8 +28,10 @@ import labnote as lb
 
 default_args_yaml = './example_default_args.yml'
 # all options of add_argument function can be a key of each parameter entry.
-with open(default_args_yaml,'w') as f:
-    conf = '''
+import os
+if not os.path.exists(default_args_yaml):
+    with open(default_args_yaml,'w') as f:
+        conf = '''
 N:
   default: 100
   type: int
@@ -43,7 +47,7 @@ beta:
   type: float
   help: std. dev. of the second normal distribution
 '''
-    f.write(conf)
+        f.write(conf)
 
 
 # # 3. Feed yaml from command line
@@ -59,13 +63,14 @@ beta:
 
 
 config_yaml = './test.yml'
-with open(config_yaml,'w') as f:
-    f.write(
+if not os.path.exists(default_args_yaml):
+    with open(config_yaml,'w') as f:
+        f.write(
 '''
 alpha: 2.0
 beta: 0.5
 '''
-)
+    )
 
 
 # # 4. Create a note.

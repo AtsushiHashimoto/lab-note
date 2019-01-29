@@ -136,12 +136,7 @@ class Note():
                 _type = utils.get_type(act['type'])
                 act.pop('type')
             elif 'default' in act.keys():
-                try:
-                    v = eval(act['default'])
-                    _type=type(v)
-                except:
-                    pass
-                    
+                _type=type(act['default'])
             parser.add_argument(*name,type=_type,**act) 
             
         return parser
